@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BIR Form 2307 – ZAMBALES 1 ELECTRIC COOPERATIVE</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+    </script>
+    <style>
+        /* ── RESET & BASE ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            background: #e8e8e8;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════
+                   WELCOME OVERLAY — #198450 GREEN THEME
+                   ═══════════════════════════════════════════ */
+        #welcomeOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #198450;
+            transition: opacity 1.2s ease, visibility 1.2s ease;
+            opacity: 1;
+            visibility: visible;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        #welcomeOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 750px;
+            width: 90%;
+            animation: welcomeFadeUp 1.6s ease forwards;
+        }
+        @keyframes welcomeFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.92);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ── SEAL IMAGE ── */
+        .welcome-seal-img {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .welcome-seal-img img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 6px solid #f5e6b8;
+            box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.15), 0 16px 48px rgba(0, 0, 0, 0.35);
+            object-fit: cover;
+            background: #f5f0e7;
+            animation: sealPulse 3.2s ease-in-out infinite;
+            transition: transform 0.4s ease;
+        }
+        .welcome-seal-img img:hover {
+            transform: scale(1.04);
+        }
+        @keyframes sealPulse {
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.15), 0 16px 48px rgba(0, 0, 0, 0.35);
+            }
+            50% {
+                transform: scale(1.04);
+                box-shadow: 0 0 0 20px rgba(255, 255, 255, 0.08), 0 22px 56px rgba(0, 0, 0, 0.45);
+            }
+        }
+
+        /* Fallback CSS seal if image fails */
+        .seal-fallback {
+            display: none;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #f5f0e7;
+            border: 6px solid #f5e6b8;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Georgia', serif;
+            box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.15), 0 16px 48px rgba(0, 0, 0, 0.35);
+            animation: sealPulse 3.2s ease-in-out infinite;
+        }
+        .seal-fallback .sf-outer {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #1a3a6b;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .seal-fallback .sf-star {
+            font-size: 26px;
+            color: #c9a84c;
+            line-height: 1;
+        }
+        .seal-fallback .sf-inner {
+            font-size: 9px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: #1a3a6b;
+            background: #e8e0d0;
+            padding: 2px 14px;
+            border-radius: 12px;
+            margin-top: 2px;
+        }
+        .seal-fallback .sf-year {
+            font-size: 9px;
+            font-weight: 700;
+            color: #1a3a6b;
+            letter-spacing: 2px;
+            margin-top: 1px;
+        }
+
+        /* ── COMPANY NAME ── */
+        .welcome-company {
+            font-size: 34px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 1.5px;
+            text-shadow: 0 3px 16px rgba(0, 0, 0, 0.30);
+            margin: 6px 0 4px;
+            line-height: 1.15;
+        }
+        .welcome-company .highlight {
+            color: #f5e6b8;
+        }
+        .welcome-sub {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.60);
+            letter-spacing: 3px;
+            font-weight: 300;
+            margin-top: 4px;
+            text-transform: uppercase;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ── DECORATIVE DIVIDER ── */
+        .welcome-divider {
+            width: 80px;
+            height: 3px;
+            background: #f5e6b8;
+            margin: 14px auto 18px;
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+
+        /* ── LOADER ── */
+        .welcome-loader {
+            margin-top: 22px;
+            width: 240px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .welcome-loader .loader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f5e6b8, #ffd966, #f5e6b8);
+            background-size: 200% 100%;
+            border-radius: 4px;
+            animation: loadProgress 2.8s ease-in-out forwards, shimmer 2s ease-in-out infinite;
+        }
+        @keyframes loadProgress {
+            0% {
+                width: 0%;
+            }
+            30% {
+                width: 30%;
+            }
+            55% {
+                width: 58%;
+            }
+            80% {
+                width: 82%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        @keyframes shimmer {
+            0%,
+            100% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 0%;
+            }
+        }
+
+        .welcome-loading-text {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 3px;
+            margin-top: 14px;
+            font-family: Arial, sans-serif;
+            font-weight: 300;
+        }
+
+        /* ── TOP BAR ── */
+        #topbar {
+            background: #1a3a6b;
+            color: #fff;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+        #topbar .topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #topbar .topbar-logo img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid #f5e6b8;
+            object-fit: cover;
+            background: #fff;
+        }
+        #topbar h1 {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .4px;
+            white-space: nowrap;
+        }
+        #search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 220px;
+            max-width: 380px;
+        }
+        #searchInput {
+            flex: 1;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            font-size: 12px;
+            outline: none;
+        }
+        #searchBtn {
+            background: #f0a500;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        #searchBtn:hover {
+            background: #d99000;
+        }
+        .topbar-btns {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+        .topbar-btns button {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .15s;
+        }
+        #saveBtn {
+            background: #28a745;
+            color: #fff;
+        }
+        #saveBtn:hover {
+            background: #1e8035;
+        }
+        #excelBtn {
+            background: #f0a500;
+            color: #000;
+        }
+        #excelBtn:hover {
+            background: #d99000;
+        }
+        #clearBtn {
+            background: #dc3545;
+            color: #fff;
+        }
+        #clearBtn:hover {
+            background: #b52a37;
+        }
+
+        /* ── SEARCH RESULTS DROPDOWN ── */
+        #searchResults {
+            position: absolute;
+            top: 52px;
+            left: 16px;
+            background: #fff;
+            border: 1px solid #999;
+            border-radius: 4px;
+            min-width: 520px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 200;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            display: none;
+        }
+        #searchResults table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        #searchResults th {
+            background: #1a3a6b;
+            color: #fff;
+            padding: 5px 8px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        #searchResults td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        #searchResults tr:hover td {
+            background: #eef4ff;
+        }
+        #searchResults .no-result {
+            padding: 10px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* ── FORM WRAPPER ── */
+        .page {
+            width: 794px;
+            margin: 16px auto;
+            background: #fff;
+            padding: 12px 16px 20px;
+            border: 1px solid #aaa;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+            font-size: 10.5px;
+        }
+
+        /* ── HEADER ── */
+        .form-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .bir-use {
+            font-size: 9px;
+            line-height: 1.5;
+        }
+        .center-title {
+            text-align: center;
+            flex: 1;
+        }
+        .logo-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2px;
+        }
+        .logo-wrap img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid #000;
+            object-fit: cover;
+            background: #fff;
+        }
+        .form-num {
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .form-sub {
+            font-size: 8px;
+        }
+        .dept-title {
+            font-size: 9px;
+            line-height: 1.5;
+        }
+        .main-title {
+            font-size: 14px;
+            font-weight: 900;
+            margin-top: 2px;
+        }
+        .sub-title {
+            font-size: 12px;
+            font-weight: 900;
+        }
+        .barcode-box {
+            border: 1px solid #000;
+            width: 120px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+        }
+        .form-code {
+            font-size: 8px;
+            text-align: right;
+            margin-top: 2px;
+        }
+
+        .instruction {
+            font-size: 8.5px;
+            margin-bottom: 3px;
+        }
+
+        /* ── FIELD ROWS ── */
+        .field-row {
+            display: flex;
+            align-items: stretch;
+            border: 1px solid #000;
+            margin-top: -1px;
+        }
+        .field-label {
+            font-size: 8px;
+            padding: 2px 4px;
+            display: flex;
+            align-items: center;
+            min-width: 180px;
+            border-right: 1px solid #000;
+            background: #fff;
+            line-height: 1.3;
+        }
+        .field-num {
+            font-weight: 700;
+            margin-right: 3px;
+            white-space: nowrap;
+        }
+        .field-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 1px 3px;
+            flex-wrap: wrap;
+            gap: 2px;
+        }
+
+        /* Period boxes */
+        .period-boxes {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 9px;
+        }
+        .period-boxes span {
+            font-size: 8px;
+        }
+        .digit-box {
+            width: 18px;
+            height: 20px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 700;
+            background: #fff;
+            outline: none;
+            padding: 0;
+            display: inline-block;
+        }
+        .digit-box:focus {
+            background: #fffde7;
+            border-color: #1a3a6b;
+        }
+
+        /* TIN boxes */
+        .tin-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .tin-box {
+            display: flex;
+            gap: 1px;
+        }
+        .tin-digit {
+            width: 16px;
+            height: 18px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 9px;
+            background: #fff;
+            outline: none;
+            padding: 0;
+        }
+        .tin-digit:focus {
+            background: #fffde7;
+            border-color: #1a3a6b;
+        }
+        .tin-sep {
+            font-size: 11px;
+            font-weight: 700;
+            margin: 0 2px;
+        }
+
+        /* Text inputs */
+        .text-input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #999;
+            font-size: 10.5px;
+            font-family: Arial, sans-serif;
+            background: #fffff0;
+            outline: none;
+            padding: 2px 2px;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            background: #fffde7;
+            border-bottom-color: #1a3a6b;
+        }
+        .text-input.readonly {
+            background: #f5f5f5;
+            font-weight: 700;
+            border-bottom: 1px solid #ccc;
+            cursor: default;
+        }
+
+        /* ── SECTION HEADERS ── */
+        .section-header {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px;
+            margin-top: 2px;
+            letter-spacing: .3px;
+        }
+
+        /* ── PART II – AS IS ── */
+        .payer-tin-row {
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+            border: 1px solid #000;
+            margin-top: -1px;
+            gap: 4px;
+        }
+        .payer-tin-label {
+            font-size: 8px;
+            min-width: 200px;
+        }
+        .tin-readonly {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .tin-ro-box {
+            width: 16px;
+            height: 18px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 9px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        .payer-name-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #000;
+            margin-top: -1px;
+            padding: 2px 4px;
+        }
+        .payer-name-label {
+            font-size: 8px;
+            min-width: 200px;
+        }
+        .payer-name-value {
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+        .payer-addr-row {
+            border: 1px solid #000;
+            margin-top: -1px;
+            padding: 2px 4px 4px;
+        }
+        .payer-addr-label {
+            font-size: 8px;
+            color: #444;
+        }
+        .payer-addr-value {
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        /* ── PART III TABLE ── */
+        .part3-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2px;
+            font-size: 9px;
+        }
+        .part3-table th,
+        .part3-table td {
+            border: 1px solid #000;
+            padding: 2px 3px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .part3-table .col-header {
+            background: #fff;
+            font-size: 8px;
+            font-weight: 700;
+        }
+        .part3-table .label-col {
+            text-align: left;
+            font-size: 8px;
+            font-weight: 700;
+        }
+
+        .cell-input {
+            width: 100%;
+            border: none;
+            text-align: right;
+            font-size: 9px;
+            font-family: Arial, sans-serif;
+            background: transparent;
+            outline: none;
+            padding: 1px 2px;
+        }
+        .cell-input:focus {
+            background: #fffde7;
+        }
+        .cell-input-left {
+            width: 100%;
+            border: none;
+            text-align: left;
+            font-size: 9px;
+            font-family: Arial, sans-serif;
+            background: transparent;
+            outline: none;
+            padding: 1px 2px;
+        }
+        .cell-input-left:focus {
+            background: #fffde7;
+        }
+        .total-cell {
+            background: #f9f9f9;
+            font-weight: 700;
+            font-size: 9px;
+        }
+        .computed {
+            background: #fff9e6;
+            font-weight: 700;
+        }
+
+        /* ── CERTIFICATION ── */
+        .cert-box {
+            border: 1px solid #000;
+            margin-top: 2px;
+            padding: 6px 8px;
+            font-size: 8px;
+            line-height: 1.5;
+        }
+
+        /* ── EDIBLE LOWER SECTION ── */
+        .sig-printed {
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            padding: 8px 0 2px;
+        }
+        .sig-printed .editable-sig {
+            border: none;
+            border-bottom: 1px solid #999;
+            background: #fffff0;
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            padding: 2px 4px;
+            width: 80%;
+            outline: none;
+            font-family: Arial, sans-serif;
+        }
+        .sig-printed .editable-sig:focus {
+            background: #fffde7;
+            border-bottom-color: #1a3a6b;
+        }
+
+        .sig-line {
+            border-top: 1px solid #000;
+            margin-top: 24px;
+            font-size: 7.5px;
+            text-align: center;
+            padding-top: 2px;
+        }
+        .sig-sub {
+            font-size: 7px;
+            text-align: center;
+            color: #444;
+            line-height: 1.4;
+        }
+
+        .agent-row {
+            display: flex;
+            gap: 0;
+            border: 1px solid #000;
+            margin-top: -1px;
+            font-size: 8px;
+        }
+        .agent-cell {
+            flex: 1;
+            border-right: 1px solid #000;
+            padding: 3px 5px;
+        }
+        .agent-cell:last-child {
+            border-right: none;
+        }
+        .agent-cell .editable-field {
+            border: none;
+            border-bottom: 1px solid #999;
+            background: #fffff0;
+            font-size: 8px;
+            width: 100%;
+            padding: 2px 2px;
+            margin-top: 10px;
+            outline: none;
+            font-family: Arial, sans-serif;
+        }
+        .agent-cell .editable-field:focus {
+            background: #fffde7;
+            border-bottom-color: #1a3a6b;
+        }
+        .agent-cell .editable-date {
+            border: none;
+            border-bottom: 1px solid #999;
+            background: #fffff0;
+            font-size: 8px;
+            width: 100%;
+            padding: 2px 2px;
+            margin-top: 10px;
+            outline: none;
+            font-family: Arial, sans-serif;
+            text-transform: uppercase;
+        }
+        .agent-cell .editable-date:focus {
+            background: #fffde7;
+            border-bottom-color: #1a3a6b;
+        }
+
+        .conforme-header {
+            text-align: center;
+            font-weight: 700;
+            padding: 3px;
+            border: 1px solid #000;
+            margin-top: -1px;
+            background: #f0f0f0;
+            font-size: 9px;
+        }
+
+        .note {
+            font-size: 7.5px;
+            margin-top: 4px;
+        }
+
+        /* ── ZIP CODE BOX ── */
+        .zip-boxes {
+            display: flex;
+            gap: 1px;
+        }
+        .zip-digit {
+            width: 14px;
+            height: 16px;
+            border: 1px solid #000;
+            background: #fff;
+            text-align: center;
+            font-size: 9px;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1a3a6b;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+            z-index: 999;
+        }
+        #toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 820px) {
+            .page {
+                width: 100%;
+                margin: 8px auto;
+                padding: 10px;
+            }
+            #topbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            #search-wrap {
+                max-width: 100%;
+            }
+            .topbar-btns {
+                margin-left: 0;
+                flex-wrap: wrap;
+            }
+            .topbar-btns button {
+                flex: 1;
+                min-width: 80px;
+            }
+            #searchResults {
+                min-width: auto;
+                left: 8px;
+                right: 8px;
+                width: auto;
+            }
+            .welcome-company {
+                font-size: 22px;
+            }
+            .welcome-seal-img img {
+                width: 120px;
+                height: 120px;
+            }
+        }
+        @media print {
+            #topbar,
+            #welcomeOverlay,
+            #searchResults,
+            #toast {
+                display: none !important;
+            }
+            .page {
+                box-shadow: none;
+                border: 1px solid #000;
+                margin: 0 auto;
+            }
+            body {
+                background: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ WELCOME OVERLAY — GREEN THEME #198450 ═══ -->
+    <div id="welcomeOverlay">
+        <div class="welcome-content">
+            <!-- Cooperative Seal Image -->
+            <div class="welcome-seal-img">
+                <img
+                src="416998910_870513944861778_2609699983820303637_n.jpg"
+                alt="ZAMBALES 1 ELECTRIC COOPERATIVE SEAL"
+                onerror="this.style.display='none'; document.getElementById('sealFallback').style.display='flex';"
+                />
+                <!-- Fallback CSS seal -->
+            </div>
+
+            <!-- Company Name -->
+            <div class="welcome-company">
+                ZAMBALES 1 <span class="highlight">ELECTRIC</span><br />COOPERATIVE, INC.
+            </div>
+            <div class="welcome-divider"></div>
+            <div class="welcome-sub">Certificate of Creditable Tax Withheld at Source</div>
+
+            <!-- Loader -->
+            <div class="welcome-loader">
+                <div class="loader-bar"></div>
+            </div>
+            <div class="welcome-loading-text">LOADING SYSTEM …</div>
+        </div>
+    </div>
+
+    <!-- ═══ TOP BAR ═══ -->
+    <div id="topbar">
+        <div class="topbar-logo">
+            <img
+            src="416998910_870513944861778_2609699983820303637_n.jpg"
+            alt="Cooperative Seal"
+            onerror="this.style.display='none'"
+            />
+            <h1>BIR Form 2307</h1>
+        </div>
+        <div id="search-wrap">
+            <input type="text" id="searchInput" placeholder="Search saved records (Name / TIN / ATC)…" autocomplete="off" />
+            <button id="searchBtn" onclick="searchRecords()">Search</button>
+        </div>
+        <div class="topbar-btns">
+            <button id="saveBtn" onclick="saveRecord()">💾 Save to Excel</button>
+            <button id="excelBtn" onclick="downloadExcel()">📥 Download Excel</button>
+            <button id="clearBtn" onclick="clearForm()">🗑 Clear Form</button>
+        </div>
+    </div>
+
+    <!-- SEARCH DROPDOWN -->
+    <div id="searchResults"></div>
+
+    <!-- ═══ FORM PAGE ═══ -->
+    <div class="page">
+
+        <!-- HEADER -->
+        <div class="form-header">
+            <div class="bir-use">
+                For BIR &nbsp; BCS/<br>
+                Use Only &nbsp; Item.
+                <div style="margin-top:6px;">
+                    <div class="form-num">2307</div>
+                    <div class="form-sub">January 2018 (ENCS)</div>
+                </div>
+            </div>
+            <div class="center-title">
+                <div class="logo-wrap">
+                    <img
+                    src="416998910_870513944861778_2609699983820303637_n.jpg"
+                    alt="Cooperative Seal"
+                    onerror="this.outerHTML='<div class=\\'logo-circle\\' style=\\'width:42px;height:42px;border-radius:50%;border:2px solid #000;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;text-align:center;line-height:1.1;background:#fff;\\'>Republic<br>of the<br>Phil.</div>'"
+                    />
+                </div>
+                <div class="dept-title">Republic of the Philippines<br>Department of Finance<br>Bureau of Internal Revenue</div>
+                <div class="main-title">Certificate of Creditable Tax</div>
+                <div class="sub-title">Withheld at Source</div>
+            </div>
+            <div>
+                <div class="barcode-box">▌▌▌▌▌ ▌▌▌▌▌▌▌ ▌▌▌▌▌</div>
+                <div class="form-code">2307 01/18ENCS</div>
+            </div>
+        </div>
+
+        <div class="instruction">Fill in all applicable spaces. Mark all appropriate boxes with an 'X'.</div>
+
+        <!-- FIELD 1 – FOR THE PERIOD -->
+        <div class="field-row">
+            <div class="field-label"><span class="field-num">1</span> For the Period</div>
+            <div class="field-content">
+                <div class="period-boxes">
+                    From
+                    <input class="digit-box" id="fromM1" maxlength="1" size="1" oninput="nextFocus(this,'fromM2')" />
+                    <input class="digit-box" id="fromM2" maxlength="1" size="1" oninput="nextFocus(this,'fromD1')" />
+                    /
+                    <input class="digit-box" id="fromD1" maxlength="1" size="1" oninput="nextFocus(this,'fromD2')" />
+                    <input class="digit-box" id="fromD2" maxlength="1" size="1" oninput="nextFocus(this,'fromY1')" />
+                    /
+                    <input class="digit-box" id="fromY1" maxlength="1" size="1" oninput="nextFocus(this,'fromY2')" />
+                    <input class="digit-box" id="fromY2" maxlength="1" size="1" oninput="nextFocus(this,'fromY3')" />
+                    <input class="digit-box" id="fromY3" maxlength="1" size="1" oninput="nextFocus(this,'fromY4')" />
+                    <input class="digit-box" id="fromY4" maxlength="1" size="1" />
+                    &nbsp;<span style="font-size:8px">(MM/DD/YYYY)</span>
+                    &nbsp;&nbsp; To
+                    <input class="digit-box" id="toM1" maxlength="1" size="1" oninput="nextFocus(this,'toM2')" />
+                    <input class="digit-box" id="toM2" maxlength="1" size="1" oninput="nextFocus(this,'toD1')" />
+                    /
+                    <input class="digit-box" id="toD1" maxlength="1" size="1" oninput="nextFocus(this,'toD2')" />
+                    <input class="digit-box" id="toD2" maxlength="1" size="1" oninput="nextFocus(this,'toY1')" />
+                    /
+                    <input class="digit-box" id="toY1" maxlength="1" size="1" oninput="nextFocus(this,'toY2')" />
+                    <input class="digit-box" id="toY2" maxlength="1" size="1" oninput="nextFocus(this,'toY3')" />
+                    <input class="digit-box" id="toY3" maxlength="1" size="1" oninput="nextFocus(this,'toY4')" />
+                    <input class="digit-box" id="toY4" maxlength="1" size="1" />
+                    &nbsp;<span style="font-size:8px">(MM/DD/YYYY)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PART I HEADER -->
+        <div class="section-header">Part I – Payee Information</div>
+
+        <!-- FIELD 2 – PAYEE TIN -->
+        <div class="field-row">
+            <div class="field-label"><span class="field-num">2</span> Taxpayer Identification Number (TIN)</div>
+            <div class="field-content">
+                <div class="tin-group">
+                    <div class="tin-box">
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,0,'payee')" data-group="payee" data-idx="0" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,1,'payee')" data-group="payee" data-idx="1" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,2,'payee')" data-group="payee" data-idx="2" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,3,'payee')" data-group="payee" data-idx="3" />
+                    </div>
+                    <span class="tin-sep">-</span>
+                    <div class="tin-box">
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,4,'payee')" data-group="payee" data-idx="4" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,5,'payee')" data-group="payee" data-idx="5" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,6,'payee')" data-group="payee" data-idx="6" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,7,'payee')" data-group="payee" data-idx="7" />
+                    </div>
+                    <span class="tin-sep">-</span>
+                    <div class="tin-box">
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,8,'payee')" data-group="payee" data-idx="8" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,9,'payee')" data-group="payee" data-idx="9" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,10,'payee')" data-group="payee" data-idx="10" />
+                        <input class="tin-digit" maxlength="1" oninput="nextTin(this,11,'payee')" data-group="payee" data-idx="11" />
+                    </div>
+                    <span class="tin-sep">-</span>
+                    <div class="tin-box">
+                        <input class="tin-digit" maxlength="1" data-group="payee" data-idx="12" />
+                        <input class="tin-digit" maxlength="1" data-group="payee" data-idx="13" />
+                        <input class="tin-digit" maxlength="1" data-group="payee" data-idx="14" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIELD 3 – PAYEE NAME -->
+        <div class="field-row" style="flex-direction:column">
+            <div style="display:flex;align-items:center">
+                <div class="field-label" style="min-width:180px"><span class="field-num">3</span> Payee's Name <span style="font-weight:400;font-size:7.5px">(Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual)</span></div>
+            </div>
+            <div style="padding:2px 4px 4px">
+                <input type="text" class="text-input" id="payeeName" placeholder="Enter payee name" />
+            </div>
+        </div>
+
+        <!-- FIELD 4 – REGISTERED ADDRESS -->
+        <div style="border:1px solid #000;margin-top:-1px;display:flex;align-items:stretch;">
+            <div style="flex:1;padding:2px 4px 4px;border-right:1px solid #000;">
+                <div style="font-size:8px"><span style="font-weight:700">4</span> Registered Address</div>
+                <input type="text" class="text-input" id="payeeAddr" placeholder="Enter registered address" />
+            </div>
+            <div style="padding:2px 6px 4px;min-width:90px;">
+                <div style="font-size:8px;font-weight:700">4A ZIP Code</div>
+                <div class="zip-boxes" style="margin-top:2px">
+                    <input class="zip-digit tin-digit" maxlength="1" style="width:14px;height:16px" />
+                    <input class="zip-digit tin-digit" maxlength="1" style="width:14px;height:16px" />
+                    <input class="zip-digit tin-digit" maxlength="1" style="width:14px;height:16px" />
+                    <input class="zip-digit tin-digit" maxlength="1" style="width:14px;height:16px" />
+                </div>
+            </div>
+        </div>
+
+        <!-- FIELD 5 – FOREIGN ADDRESS -->
+        <div style="border:1px solid #000;margin-top:-1px;padding:2px 4px 4px;">
+            <div style="font-size:8px"><span style="font-weight:700">5</span> Foreign Address, if applicable</div>
+            <input type="text" class="text-input" id="foreignAddr" placeholder="" />
+        </div>
+
+        <!-- PART II HEADER -->
+        <div class="section-header" style="margin-top:4px">Part II – Payer Information</div>
+
+        <!-- FIELD 6 – PAYER TIN (AS IS) -->
+        <div class="payer-tin-row">
+            <div class="payer-tin-label"><span style="font-weight:700">6</span> Taxpayer Identification Number (TIN)</div>
+            <div class="tin-readonly">
+                <div style="display:flex;gap:1px">
+                    <div class="tin-ro-box">0</div><div class="tin-ro-box">0</div><div class="tin-ro-box">0</div><div class="tin-ro-box">1</div>
+                </div>
+                <span class="tin-sep">-</span>
+                <div style="display:flex;gap:1px">
+                    <div class="tin-ro-box">9</div><div class="tin-ro-box">9</div><div class="tin-ro-box">2</div><div class="tin-ro-box">1</div>
+                </div>
+                <span class="tin-sep">-</span>
+                <div style="display:flex;gap:1px">
+                    <div class="tin-ro-box">7</div><div class="tin-ro-box">6</div><div class="tin-ro-box">1</div><div class="tin-ro-box">1</div>
+                </div>
+                <span class="tin-sep">-</span>
+                <div style="display:flex;gap:1px">
+                    <div class="tin-ro-box">0</div><div class="tin-ro-box">0</div><div class="tin-ro-box">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIELD 7 – PAYER NAME (AS IS) -->
+        <div class="payer-name-row">
+            <div class="payer-name-label"><span style="font-weight:700">7</span> Payor's Name <span style="font-size:7.5px;font-weight:400">(Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual)</span></div>
+            <div class="payer-name-value">ZAMBALES I ELECTRIC COOPERATIVE</div>
+        </div>
+
+        <!-- FIELD 8 – PAYER ADDRESS (AS IS) -->
+        <div class="payer-addr-row">
+            <div class="payer-addr-label"><span style="font-weight:700">8</span> Registered Address</div>
+            <div class="payer-addr-value">SAN VICENTE PALAUIG ZAMBALES</div>
+            <div style="font-size:8px;float:right;margin-top:-18px;">8A ZIP Code
+                <div class="zip-boxes" style="margin-top:2px">
+                    <div class="tin-ro-box" style="width:14px;height:16px"> </div>
+                    <div class="tin-ro-box" style="width:14px;height:16px"> </div>
+                    <div class="tin-ro-box" style="width:14px;height:16px"> </div>
+                    <div class="tin-ro-box" style="width:14px;height:16px"> </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PART III TABLE -->
+        <div class="section-header" style="margin-top:4px;font-size:8px">Part III – Details of Monthly Income Payments and Taxes Withheld</div>
+
+        <table class="part3-table" id="part3Table">
+            <thead>
+                <tr>
+                    <th class="col-header" rowspan="2" style="width:24%;text-align:left">Income Payments Subject to Expanded<br>Withholding Tax</th>
+                    <th class="col-header" rowspan="2" style="width:8%">ATC</th>
+                    <th class="col-header" colspan="3">AMOUNT OF INCOME PAYMENTS</th>
+                    <th class="col-header" rowspan="2" style="width:10%">Total</th>
+                    <th class="col-header" rowspan="2" style="width:10%">Tax Withheld for the Quarter</th>
+                </tr>
+                <tr>
+                    <th class="col-header" style="width:12%">1st Month of the Quarter</th>
+                    <th class="col-header" style="width:12%">2nd Month of the Quarter</th>
+                    <th class="col-header" style="width:12%">3rd Month of the Quarter</th>
+                </tr>
+            </thead>
+            <tbody id="part3Body">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" class="label-col total-cell">Total</td>
+                    <td class="total-cell computed" id="totM1">-</td>
+                    <td class="total-cell computed" id="totM2">-</td>
+                    <td class="total-cell computed" id="totM3">-</td>
+                    <td class="total-cell computed" id="totAll">-</td>
+                    <td class="total-cell computed" id="totTax">-</td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="background:#f0f0f0;font-size:8px;font-weight:700;text-align:left;padding:3px 4px">
+                        Money Payments Subject to Withholding of Business Tax (Government &amp; Private)
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Money payments rows -->
+        <table class="part3-table" id="moneyTable" style="margin-top:-1px">
+            <tbody id="moneyBody"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" class="label-col total-cell" style="width:32%">Total</td>
+                    <td class="total-cell computed" id="mTotM1" style="width:12%">-</td>
+                    <td class="total-cell computed" id="mTotM2" style="width:12%">-</td>
+                    <td class="total-cell computed" id="mTotM3" style="width:12%">-</td>
+                    <td class="total-cell computed" id="mTotAll" style="width:10%">-</td>
+                    <td class="total-cell computed" id="mTotTax" style="width:10%">-</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- CERTIFICATION -->
+        <div class="cert-box">
+            We declare under the penalties of perjury that this certificate has been made in good faith, verified by us, and to the best of our knowledge and belief, is true and correct, pursuant to the provisions of the National Internal Revenue Code, as amended, and the regulations issued under authority thereof. Further, we give our consent to the processing of our information as contemplated under the *Data Privacy Act of 2012 (R.A. No. 10173) for legitimate and lawful purposes.
+        </div>
+
+        <!-- ═══ SIGNATURE PAYER — WITH EDITABLE FIELDS ═══ -->
+        <div style="border:1px solid #000;margin-top:-1px;padding:8px 10px;">
+            <div class="sig-printed">
+                <input type="text" class="editable-sig" id="payerSigName" value="SHARON Q. DOMACENA, CPA/GENERAL MANAGER" placeholder="Signature over Printed Name" />
+            </div>
+            <div class="sig-line">Signature over Printed Name of Payor/Payor's Authorized Representative/Tax Agent</div>
+            <div class="sig-sub">(Indicate Title/Designation and TIN)</div>
+        </div>
+
+        <!-- ═══ AGENT ROW — FULLY EDITABLE ═══ -->
+        <div class="agent-row">
+            <div class="agent-cell">
+                Tax Agent Accreditation No. /<br>Attorney's Roll No. (if applicable)
+                <input type="text" class="editable-field" id="payerAccredNo" placeholder="Enter accreditation / roll no." />
+            </div>
+            <div class="agent-cell">
+                Date of Issue<br>(MM/DD/YYYY)
+                <input type="text" class="editable-date" id="payerDateIssue" placeholder="MM/DD/YYYY" maxlength="10" />
+            </div>
+            <div class="agent-cell">
+                Date of Expiry<br>(MM/DD/YYYY)
+                <input type="text" class="editable-date" id="payerDateExpiry" placeholder="MM/DD/YYYY" maxlength="10" />
+            </div>
+        </div>
+
+        <div class="conforme-header">CONFORME:</div>
+
+        <!-- ═══ SIGNATURE PAYEE — WITH EDITABLE FIELDS ═══ -->
+        <div style="border:1px solid #000;margin-top:-1px;padding:8px 10px;">
+            <div style="margin-top:24px"></div>
+            <div class="sig-printed">
+                <input type="text" class="editable-sig" id="payeeSigName" placeholder="Signature over Printed Name of Payee" />
+            </div>
+            <div class="sig-line">Signature over Printed Name of Payee/Payee's Authorized Representative/Tax Agent</div>
+            <div class="sig-sub">(Indicate Title/Designation and TIN)</div>
+        </div>
+
+        <!-- ═══ AGENT ROW (PAYEE) — FULLY EDITABLE ═══ -->
+        <div class="agent-row">
+            <div class="agent-cell">
+                Tax Agent Accreditation No. /<br>Attorney's Roll No. (if applicable)
+                <input type="text" class="editable-field" id="payeeAccredNo" placeholder="Enter accreditation / roll no." />
+            </div>
+            <div class="agent-cell">
+                Date of Issue<br>(MM/DD/YYYY)
+                <input type="text" class="editable-date" id="payeeDateIssue" placeholder="MM/DD/YYYY" maxlength="10" />
+            </div>
+            <div class="agent-cell">
+                Date of Expiry<br>(MM/DD/YYYY)
+                <input type="text" class="editable-date" id="payeeDateExpiry" placeholder="MM/DD/YYYY" maxlength="10" />
+            </div>
+        </div>
+
+        <div class="note">*NOTE: The BIR Data Privacy is in the BIR website (www.bir.gov.ph)</div>
+
+    </div>
+    <!-- /page -->
+
+    <!-- TOAST -->
+    <div id="toast">✔ Record saved!</div>
+
+    <script>
+        // ─── WELCOME OVERLAY: AUTO-DISMISS ───
+        (function() {
+            const overlay = document.getElementById('welcomeOverlay');
+            setTimeout(function() {
+                overlay.classList.add('hidden');
+                setTimeout(function() {
+                    overlay.style.display = 'none';
+                }, 1200);
+            }, 4200);
+            overlay.addEventListener('click', function() {
+                if (!overlay.classList.contains('hidden')) {
+                    overlay.classList.add('hidden');
+                    setTimeout(function() {
+                        overlay.style.display = 'none';
+                    }, 1200);
+                }
+            });
+        })();
+
+
+        // ─── DB IN MEMORY ───
+        let DB = [];
+        try {
+            const saved = sessionStorage.getItem('bir2307db');
+            if (saved) DB = JSON.parse(saved);
+        } catch (e) {}
+
+        function persistDB() {
+            try { sessionStorage.setItem('bir2307db', JSON.stringify(DB)); } catch (e) {}
+        }
+
+        // ─── BUILD PART III ROWS ───
+        const NUM_ROWS = 12;
+
+        function buildRows(tbodyId, prefix) {
+            const tbody = document.getElementById(tbodyId);
+            tbody.innerHTML = '';
+            for (let i = 0; i < NUM_ROWS; i++) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+              <td><input class="cell-input-left" placeholder="" oninput="calcTotals()" id="${prefix}desc${i}"/></td>
+              <td><input class="cell-input-left" style="text-align:center" oninput="calcTotals()" id="${prefix}atc${i}"/></td>
+              <td><input class="cell-input" type="text" oninput="fmtNum(this);calcTotals()" id="${prefix}m1_${i}"/></td>
+              <td><input class="cell-input" type="text" oninput="fmtNum(this);calcTotals()" id="${prefix}m2_${i}"/></td>
+              <td><input class="cell-input" type="text" oninput="fmtNum(this);calcTotals()" id="${prefix}m3_${i}"/></td>
+              <td class="computed" id="${prefix}tot_${i}"></td>
+              <td><input class="cell-input" type="text" oninput="fmtNum(this);calcTotals()" id="${prefix}tax_${i}"/></td>`;
+                tbody.appendChild(tr);
+            }
+        }
+        buildRows('part3Body', 'p3_');
+        buildRows('moneyBody', 'mp_');
+
+        // ─── FORMAT NUMBER ───
+        function fmtNum(el) {
+            let raw = el.value.replace(/[^0-9.]/g, '');
+            if (raw === '' || raw === '.') { el.value = raw; return; }
+            const parts = raw.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            el.value = parts.length > 1 ? parts[0] + '.' + parts[1].slice(0, 2) : parts[0];
+        }
+
+        function parseNum(s) {
+            if (!s) return 0;
+            return parseFloat(s.replace(/,/g, '')) || 0;
+        }
+
+        function fmt(n) {
+            if (n === 0) return '-';
+            return n.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ─── CALCULATE TOTALS ───
+        function calcTotals() {
+            calcSection('p3_', 'totM1', 'totM2', 'totM3', 'totAll', 'totTax');
+            calcSection('mp_', 'mTotM1', 'mTotM2', 'mTotM3', 'mTotAll', 'mTotTax');
+            ['p3_', 'mp_'].forEach(prefix => {
+                for (let i = 0; i < NUM_ROWS; i++) {
+                    const m1 = parseNum(document.getElementById(prefix + 'm1_' + i)?.value);
+                    const m2 = parseNum(document.getElementById(prefix + 'm2_' + i)?.value);
+                    const m3 = parseNum(document.getElementById(prefix + 'm3_' + i)?.value);
+                    const cell = document.getElementById(prefix + 'tot_' + i);
+                    if (cell) cell.textContent = (m1 + m2 + m3) > 0 ? fmt(m1 + m2 + m3) : '';
+                }
+            });
+        }
+
+        function calcSection(prefix, idM1, idM2, idM3, idAll, idTax) {
+            let sm1 = 0,
+                sm2 = 0,
+                sm3 = 0,
+                stax = 0;
+            for (let i = 0; i < NUM_ROWS; i++) {
+                sm1 += parseNum(document.getElementById(prefix + 'm1_' + i)?.value);
+                sm2 += parseNum(document.getElementById(prefix + 'm2_' + i)?.value);
+                sm3 += parseNum(document.getElementById(prefix + 'm3_' + i)?.value);
+                stax += parseNum(document.getElementById(prefix + 'tax_' + i)?.value);
+            }
+            document.getElementById(idM1).textContent = fmt(sm1);
+            document.getElementById(idM2).textContent = fmt(sm2);
+            document.getElementById(idM3).textContent = fmt(sm3);
+            document.getElementById(idAll).textContent = fmt(sm1 + sm2 + sm3);
+            document.getElementById(idTax).textContent = fmt(stax);
+        }
+
+        // ─── NEXT FOCUS HELPERS ───
+        function nextFocus(el, nextId) {
+            if (el.value.length >= 1) {
+                const nx = document.getElementById(nextId);
+                if (nx) nx.focus();
+            }
+        }
+
+        function nextTin(el, idx, group) {
+            if (el.value.length < 1) return;
+            const all = document.querySelectorAll(`[data-group="${group}"]`);
+            const next = Array.from(all).find(e => parseInt(e.dataset.idx) === idx + 1);
+            if (next) next.focus();
+        }
+
+        // ─── GET FORM DATA ───
+        function getFormData() {
+            const payeeTin = Array.from(document.querySelectorAll('[data-group="payee"]'))
+                .map(e => e.value || '_').join('');
+            const from =
+                `${v('fromM1')}${v('fromM2')}/${v('fromD1')}${v('fromD2')}/${v('fromY1')}${v('fromY2')}${v('fromY3')}${v('fromY4')}`;
+            const to =
+                `${v('toM1')}${v('toM2')}/${v('toD1')}${v('toD2')}/${v('toY1')}${v('toY2')}${v('toY3')}${v('toY4')}`;
+            const atcCodes = [];
+            for (let i = 0; i < NUM_ROWS; i++) {
+                const a = document.getElementById('p3_atc' + i)?.value;
+                if (a) atcCodes.push(a);
+            }
+            return {
+                period: `${from} to ${to}`,
+                tin: payeeTin,
+                name: document.getElementById('payeeName')?.value || '',
+                address: document.getElementById('payeeAddr')?.value || '',
+                foreignAddr: document.getElementById('foreignAddr')?.value || '',
+                atc: atcCodes.join(', '),
+                payerSigName: document.getElementById('payerSigName')?.value || '',
+                payerAccredNo: document.getElementById('payerAccredNo')?.value || '',
+                payerDateIssue: document.getElementById('payerDateIssue')?.value || '',
+                payerDateExpiry: document.getElementById('payerDateExpiry')?.value || '',
+                payeeSigName: document.getElementById('payeeSigName')?.value || '',
+                payeeAccredNo: document.getElementById('payeeAccredNo')?.value || '',
+                payeeDateIssue: document.getElementById('payeeDateIssue')?.value || '',
+                payeeDateExpiry: document.getElementById('payeeDateExpiry')?.value || '',
+            };
+        }
+
+        function v(id) { return document.getElementById(id)?.value || ' '; }
+
+        // ─── SAVE RECORD ───
+        function saveRecord() {
+            const d = getFormData();
+            if (!d.name.trim()) { alert('Please enter Payee Name (Field 3) before saving.'); return; }
+            const existing = DB.findIndex(r => r.tin === d.tin && d.tin.replace(/_/g, '').trim() !== '');
+            if (existing >= 0) {
+                if (!confirm('A record with this TIN already exists. Update it?')) return;
+                DB[existing] = { ...DB[existing], ...d, updatedAt: new Date().toISOString() };
+            } else {
+                DB.push({ ...d, id: Date.now(), createdAt: new Date().toISOString() });
+            }
+            persistDB();
+            showToast('✔ Record saved!');
+        }
+
+        // ─── DOWNLOAD EXCEL ───
+        function downloadExcel() {
+            if (DB.length === 0) { alert('No records saved yet. Save at least one record first.'); return; }
+            const wsData = [
+                ['NAME', 'ATC', 'TIN #', 'ADDRESS', 'FOREIGN ADDRESS', 'PERIOD',
+                    'PAYER SIG', 'PAYER ACCRED', 'PAYER ISSUE', 'PAYER EXPIRY',
+                    'PAYEE SIG', 'PAYEE ACCRED', 'PAYEE ISSUE', 'PAYEE EXPIRY'
+                ]
+            ];
+            DB.forEach(r => {
+                wsData.push([
+                    r.name || '',
+                    r.atc || '',
+                    formatTinDisplay(r.tin),
+                    r.address || '',
+                    r.foreignAddr || '',
+                    r.period || '',
+                    r.payerSigName || '',
+                    r.payerAccredNo || '',
+                    r.payerDateIssue || '',
+                    r.payerDateExpiry || '',
+                    r.payeeSigName || '',
+                    r.payeeAccredNo || '',
+                    r.payeeDateIssue || '',
+                    r.payeeDateExpiry || '',
+                ]);
+            });
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [
+                { wch: 35 }, { wch: 18 }, { wch: 18 }, { wch: 40 }, { wch: 30 },
+                { wch: 28 }, { wch: 30 }, { wch: 28 }, { wch: 18 }, { wch: 18 },
+                { wch: 30 }, { wch: 28 }, { wch: 18 }, { wch: 18 }
+            ];
+            const headerStyle = { font: { bold: true }, fill: { fgColor: { rgb: '1A3A6B' } }, alignment: { horizontal: 'center' } };
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let c = range.s.c; c <= range.e.c; c++) {
+                const addr = XLSX.utils.encode_cell({ r: 0, c: c });
+                if (ws[addr]) ws[addr].s = headerStyle;
+            }
+            XLSX.utils.book_append_sheet(wb, ws, 'BIR2307 Records');
+            XLSX.writeFile(wb, 'BIR2307_Database.xlsx');
+            showToast('📥 Excel downloaded!');
+        }
+
+        function formatTinDisplay(raw) {
+            if (!raw) return '';
+            return raw.replace(/_/g, '').replace(/-/g, '');
+        }
+
+        // ─── SEARCH ───
+        function searchRecords() {
+            const q = document.getElementById('searchInput').value.trim().toLowerCase();
+            const panel = document.getElementById('searchResults');
+            if (!q) { panel.style.display = 'none'; return; }
+            const hits = DB.filter(r =>
+                (r.name || '').toLowerCase().includes(q) ||
+                (r.tin || '').toLowerCase().includes(q) ||
+                (r.atc || '').toLowerCase().includes(q) ||
+                (r.address || '').toLowerCase().includes(q)
+            );
+            if (hits.length === 0) {
+                panel.style.display = 'block';
+                panel.innerHTML = '<div class="no-result">No matching records found.</div>';
+                return;
+            }
+            let html =
+                `<table><thead><tr><th>Name</th><th>TIN</th><th>ATC</th><th>Address</th><th>Period</th></tr></thead><tbody>`;
+            hits.forEach(r => {
+                html += `<tr onclick="loadRecord(${r.id})">
+              <td>${r.name}</td><td>${formatTinDisplay(r.tin)}</td><td>${r.atc}</td>
+              <td>${r.address}</td><td>${r.period}</td>
+            </tr>`;
+            });
+            html += '</tbody></table>';
+            panel.style.display = 'block';
+            panel.innerHTML = html;
+        }
+
+        // ─── LOAD RECORD ───
+        function loadRecord(id) {
+            const r = DB.find(x => x.id === id);
+            if (!r) return;
+            document.getElementById('payeeName').value = r.name || '';
+            document.getElementById('payeeAddr').value = r.address || '';
+            document.getElementById('foreignAddr').value = r.foreignAddr || '';
+            const tinClean = (r.tin || '').replace(/_/g, '');
+            document.querySelectorAll('[data-group="payee"]').forEach((el, i) => { el.value = tinClean[i] || ''; });
+            const parts = (r.period || '').split(' to ');
+            if (parts[0]) fillPeriod(parts[0], 'from');
+            if (parts[1]) fillPeriod(parts[1], 'to');
+
+            document.getElementById('payerSigName').value = r.payerSigName || '';
+            document.getElementById('payerAccredNo').value = r.payerAccredNo || '';
+            document.getElementById('payerDateIssue').value = r.payerDateIssue || '';
+            document.getElementById('payerDateExpiry').value = r.payerDateExpiry || '';
+            document.getElementById('payeeSigName').value = r.payeeSigName || '';
+            document.getElementById('payeeAccredNo').value = r.payeeAccredNo || '';
+            document.getElementById('payeeDateIssue').value = r.payeeDateIssue || '';
+            document.getElementById('payeeDateExpiry').value = r.payeeDateExpiry || '';
+
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+            showToast('📋 Record loaded!');
+        }
+
+        function fillPeriod(dateStr, prefix) {
+            const p = dateStr.trim().split('/');
+            if (p.length < 3) return;
+            const mm = p[0],
+                dd = p[1],
+                yyyy = p[2];
+            document.getElementById(prefix + 'M1').value = mm[0] || '';
+            document.getElementById(prefix + 'M2').value = mm[1] || '';
+            document.getElementById(prefix + 'D1').value = dd[0] || '';
+            document.getElementById(prefix + 'D2').value = dd[1] || '';
+            document.getElementById(prefix + 'Y1').value = yyyy[0] || '';
+            document.getElementById(prefix + 'Y2').value = yyyy[1] || '';
+            document.getElementById(prefix + 'Y3').value = yyyy[2] || '';
+            document.getElementById(prefix + 'Y4').value = yyyy[3] || '';
+        }
+
+        // ─── CLEAR FORM ───
+        function clearForm() {
+            if (!confirm('Clear all form fields?')) return;
+            ['fromM1', 'fromM2', 'fromD1', 'fromD2', 'fromY1', 'fromY2', 'fromY3', 'fromY4',
+                'toM1', 'toM2', 'toD1', 'toD2', 'toY1', 'toY2', 'toY3', 'toY4'
+            ].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            document.querySelectorAll('[data-group="payee"]').forEach(e => e.value = '');
+            ['payeeName', 'payeeAddr', 'foreignAddr'].forEach(id => { const el = document.getElementById(id); if (el) el
+                    .value = ''; });
+            ['payerSigName', 'payerAccredNo', 'payerDateIssue', 'payerDateExpiry',
+                'payeeSigName', 'payeeAccredNo', 'payeeDateIssue', 'payeeDateExpiry'
+            ].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            for (let i = 0; i < NUM_ROWS; i++) {
+                ['p3_', 'mp_'].forEach(p => {
+                    ['desc', 'atc', 'm1_', 'm2_', 'm3_', 'tax_'].forEach(f => {
+                        const el = document.getElementById(p + f + i);
+                        if (el) el.value = '';
+                    });
+                    const tot = document.getElementById(p + 'tot_' + i);
+                    if (tot) tot.textContent = '';
+                });
+            }
+            calcTotals();
+        }
+
+        // ─── TOAST ───
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // Close search on outside click
+        document.addEventListener('click', e => {
+            if (!e.target.closest('#search-wrap') && !e.target.closest('#searchResults')) {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+
+        // Trigger search on Enter
+        document.getElementById('searchInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') searchRecords();
+        });
+    </script>
+</body>
+</html>
